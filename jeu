@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Jeu de devinette</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .game-container {
+      background-color: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 350px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 10px 5px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #replayBtn {
+      background-color: #28a745;
+    }
+
+    #replayBtn:hover {
+      background-color: #1e7e34;
+    }
+
+    #message {
+      font-weight: bold;
+      margin-top: 20px;
+      font-size: 18px;
+    }
+
+    #attempts {
+      margin-top: 10px;
+      color: #8f2525;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <h1>Devinez le nombre</h1>
+    <p>Entre 0 et 50</p>
+    <form name="formulaire">
+    <input type="number" id="guessInput" placeholder="Entre un nombre">
+    </form>
+    <div>
+      <button onclick="checkGuess()">Vérifier</button>
+      <button id="replayBtn" onclick="restartGame()" style="display:none;">Rejouer</button>
+    </div>
+    <p id="message"></p>
+    <p id="attempts"></p>
+  </div>
+
+  <script>
+    let randomNumber;
+    let attemptsLeft;
+
+    function startGame() {
+      randomNumber = Math.floor(Math.random() * 51);
+      attemptsLeft = 5;
+      document.getElementById("message").textContent = "";
+      document.getElementById("attempts").textContent = "Tentatives restantes : " + attemptsLeft;
+      document.getElementById("guessInput").disabled = false;
+      document.querySelector("button").disabled = false;
+      document.getElementById("replayBtn").style.display = "none";
+      console.log("Nombre secret (debug) :", randomNumber); // à retirer en production
+    }
+
+    function checkGuess() {
+      const userGuess = parseInt(document.getElementById("guessInput").value);
+      const message = document.getElementById("message");
+      const attempts = document.getElementById("attempts");
+
+      if (isNaN(userGuess) || userGuess < 0 || userGuess > 50) {
+        message.textContent = "Veuillez entrer un nombre valide entre 0 et 50.";
+        return;
+      }
+
+      attemptsLeft--;
+      attempts.textContent = "Tentatives restantes : " + attemptsLeft;
+
+      if (userGuess === randomNumber) {
+        message.textContent = "Bravo, vous gagnez !";
+        endGame();
+      } else {
+        if (attemptsLeft > 0) {
+          message.textContent = "Réessayer.";
+        } else {
+          message.textContent = "Jeu terminé. Le bon nombre était " + randomNumber + ".";
+          endGame();
+        }
+      }
+    }
+
+    function endGame() {
+      document.getElementById("guessInput").disabled = true;
+      document.querySelector("button").disabled = true;
+      document.getElementById("replayBtn").style.display = "inline-block";
+    }
+
+    function restartGame() {
+      document.getElementById("guessInput").value = "";
+      startGame();
+    }
+
+    startGame();
+  </script>
+</body>
+</html>
+
+
